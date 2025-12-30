@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pastebin Lite</title>
+</head>
+<body>
+  <h2>Create Paste</h2>
+
+  <textarea id="content" rows="6" cols="50"></textarea><br><br>
+
+  TTL (seconds):
+  <input id="ttl" type="number"><br><br>
+
+  Max Views:
+  <input id="views" type="number"><br><br>
+
+  <button onclick="createPaste()">Create Paste</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function createPaste() {
+      const res = await fetch("/api/pastes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: content.value,
+          ttl_seconds: ttl.value ? Number(ttl.value) : undefined,
+          max_views: views.value ? Number(views.value) : undefined
+        })
+      });
+
+      const data = await res.json();
+      result.innerHTML = data.url
+        ? `<a href="${data.url}" target="_blank">${data.url}</a>`
+        : data.error;
+    }
+  </script>
+</body>
+</html>
